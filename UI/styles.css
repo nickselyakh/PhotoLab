@@ -199,13 +199,19 @@ a {
 }
 
 .tegs {
-    color: darkgray;
+    color: #A2A398;
     font-size: 14px;
-    font-weight: bold;
     vertical-align: middle;
     padding-left: 10px;
 }
-
+.tegs div{
+    padding: 3px;
+    width: 100%;
+    margin: 3px;
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    background: #f2f1f1;
+}
 .tegs li {
     list-style-type: none;
 }
