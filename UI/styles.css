@@ -223,10 +223,10 @@ a {
 
 .heart {
     color: #111;
-    font-size: 60px;
+    font-size: 50px;
     font-family: sans-serif;
     float: right;
-    margin-right: 10px;
+    margin: 10px 20px;
 }
 
 hr {
