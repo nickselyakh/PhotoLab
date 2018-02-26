@@ -3,7 +3,6 @@
         visibility: hidden;
         display: none;
     }
-
 }
 
 @media screen and (max-width: 400px) {
@@ -11,6 +10,14 @@
         visibility: hidden;
         display: none;
     }
+}
+
+@media screen and (min-width: 3800px) {
+    .card{
+        min-width: 500px;
+        min-height: 900px;
+    }
+
 }
 
 body {
@@ -164,7 +171,7 @@ input::placeholder {
     font-size: 12px;
     text-align: left;
     margin: 5px;
-    line-height: 15px;
+    line-height: 100%;
     font-family: Monaco;
 }
 
