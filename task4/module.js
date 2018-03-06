@@ -26,7 +26,7 @@ function generatePosts(number) {
     return posts;
 }
 
-let photoPosts = generatePosts(20);
+let photoPosts = generatePosts(20).sort((a,b)=>{ return a.createdAt - b.createdAt});
 
 let postsModule = (function (photoPosts) {
     let self = {};
@@ -70,26 +70,32 @@ let postsModule = (function (photoPosts) {
 
 
     self.validatePhotoPost = function (photoPost) {
+        let res = true;
+        let validator = {
+            id: function(id){ return typeof id === 'string'},
+            description: function (description) {return (typeof description === 'string' && description.length>0 && description.length <= 200)},
+            createdAt: function (createdAt) {return  createdAt instanceof Date},
+            author: function(author){ return (typeof author === 'string' && author.length !== 0)},
+            photoLink: function (photoLink) {return (typeof photoLink === 'string' && photoLink.length !== 0)},
+            likes: function (likes) {return  Array.isArray(likes)},
+            hashTags: function (hashTags) {return  Array.isArray(hashTags)}
+        };
 
-        return !(typeof photoPost.id !== 'string' ||
-        typeof photoPost.description !== 'string' ||
-        typeof photoPost.author !== 'string' || photoPost.author.length === 0 ||
-        typeof photoPost.photoLink !== 'string' || photoPost.photoLink.length === 0 ||
-        !photoPost.createdAt || !(photoPost.createdAt instanceof Date) ||
-        photoPost.description.length >= 200 ||
-        !Array.isArray(photoPost.likes) || !Array.isArray(photoPost.hashTags));
-
+        Object.keys(validator).forEach(key => {if(!validator[key](photoPost[key])) res = false; });
+        return res;
     };
+
 
     self.addPhotoPost = function (photoPost) {
         if (!photoPost || typeof photoPost !== 'object') {
             return false;
         }
-        if (self.validatePhotoPost(photoPost)) {
-            photoPosts.push(photoPost);
-            return true;
-        } else {
+        if (!self.validatePhotoPost(photoPost)) {
             return false;
+        } else {
+            photoPosts.push(photoPost);
+            photoPosts = photoPosts.sort((a,b)=>{return a.createdAt - b.createdAt});
+            return true;
         }
     };
 
