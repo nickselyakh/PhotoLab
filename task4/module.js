@@ -68,7 +68,9 @@ let postsModule = (function (photoPosts) {
         });
     };
 
+
     self.validatePhotoPost = function (photoPost) {
+
         return !(typeof photoPost.id !== 'string' ||
         typeof photoPost.description !== 'string' ||
         typeof photoPost.author !== 'string' || photoPost.author.length === 0 ||
@@ -197,6 +199,6 @@ function tests() {
     console.log('remove invalid post');
     console.log(postsModule.removePhotoPost('invalid id'));
 
-}
 
+}
 tests();
