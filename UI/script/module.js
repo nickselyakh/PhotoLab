@@ -26,7 +26,10 @@ function generatePosts(number) {
     return posts;
 }
 
-let photoPosts = generatePosts(20).sort((a,b)=>{ return a.createdAt - b.createdAt});
+let photoPosts = generatePosts(20).sort((a, b) => {
+    return a.createdAt - b.createdAt
+});
+
 
 let postsModule = (function (photoPosts) {
     let self = {};
@@ -70,19 +73,34 @@ let postsModule = (function (photoPosts) {
 
 
     self.validatePhotoPost = function (photoPost) {
-        let res = true;
         let validator = {
-            id: function(id){ return typeof id === 'string'},
-            description: function (description) {return (typeof description === 'string' && description.length>0 && description.length <= 200)},
-            createdAt: function (createdAt) {return  createdAt instanceof Date},
-            author: function(author){ return (typeof author === 'string' && author.length !== 0)},
-            photoLink: function (photoLink) {return (typeof photoLink === 'string' && photoLink.length !== 0)},
-            likes: function (likes) {return  Array.isArray(likes)},
-            hashTags: function (hashTags) {return  Array.isArray(hashTags)}
+            id: function (id) {
+                return typeof id === 'string'
+            },
+            description: function (description) {
+                return (typeof description === 'string' && description.length > 0 && description.length <= 200)
+            },
+            createdAt: function (createdAt) {
+                return createdAt instanceof Date
+            },
+            author: function (author) {
+                return (typeof author === 'string' && author.length !== 0)
+            },
+            photoLink: function (photoLink) {
+                return (typeof photoLink === 'string' && photoLink.length !== 0)
+            },
+            likes: function (likes) {
+                return Array.isArray(likes)
+            },
+            hashTags: function (hashTags) {
+                return Array.isArray(hashTags)
+            }
         };
 
-        Object.keys(validator).forEach(key => {if(!validator[key](photoPost[key])) res = false; });
-        return res;
+        return Object.keys(validator).every(key => {
+            return validator[key](photoPost[key]);
+
+        });
     };
 
 
@@ -94,7 +112,9 @@ let postsModule = (function (photoPosts) {
             return false;
         } else {
             photoPosts.push(photoPost);
-            photoPosts = photoPosts.sort((a,b)=>{return a.createdAt - b.createdAt});
+            photoPosts = photoPosts.sort((a, b) => {
+                return a.createdAt - b.createdAt
+            });
             return true;
         }
     };
@@ -208,3 +228,107 @@ function tests() {
 
 }
 tests();
+
+let userName = 'Author 1';
+
+let domModule = (function () {
+    let self = {};
+
+    self.displayPosts = function (posts) {
+        document.getElementById('posts').innerHTML = '';
+        for (let i = 0; i < posts.length - 1; i++) {
+            self.displayPost(posts[i]);
+        }
+    };
+
+    self.displayPost = function (post) {
+        let container = document.getElementById('posts');
+        container.insertBefore(self.getPostHTML(post), container.firstElementChild);
+    };
+
+    self.getPostHTML = function getPostHTML(post) {
+        let div = document.createElement('div');
+        div.className += 'card'
+        div.id = `post-${post.id}`;
+        div.innerHTML = `
+        <div class="card-header">
+            <div>
+                <img src="${post.photoLink}" class="profile-img">
+            </div>
+            <div class="name">
+                <div>${post.author.toUpperCase()}</div>
+                <span class="data">
+                    ${post.createdAt.toLocaleDateString()}</span>
+            </div>
+
+        </div>
+        <div class = "options padd">
+            <a href="#options">...</a>
+        </div>
+        <div class="content">
+            <img src="./img/minimalism.jpg">
+        </div>
+
+        <div class="description">
+              ${post.description}
+        </div>
+
+        <hr>
+
+        <div class="likes">
+            ${post.likes.length} likes
+        </div>
+        <div class="heart">
+           &hearts;
+        </div>
+         <div class="tegs">${post.hashTags.map(p => '#' + p).join(' ')}</div>
+
+        `;
+        return div;
+    };
+    self.editPhotoPost = function (id, post) {
+        const postElem = document.getElementById(`post-${id}`);
+        if (postElem) {
+            document.getElementById('posts').replaceChild(self.getPostHTML(post), postElem);
+        }
+    };
+    self.removePhotoPost = function (id) {
+        const childNode = document.getElementById(`post-${id}`);
+        if (childNode) {
+            document.getElementById('posts').removeChild(childNode);
+        }
+    };
+    self.displayHeader = function () {
+        let ul = document.getElementById('right').firstElementChild;
+        ul.innerHTML = `${userName ? `<li><a href="#username" class="username">${userName} |</a></li>
+                <li><div class="add">+</div></li>` :
+            `<li><a href="#" class="add">Sign in</a></li>`}`;
+    };
+    return self;
+})();
+
+function displayAllPosts() {
+    domModule.displayPosts(postsModule.getPhotoPosts(0, 10));
+}
+function addPost(post) {
+    if (dataModule.addPhotoPost(post)) {
+        domModule.displayPost(post);
+    }
+}
+function removePhotoPost(id) {
+    if (dataModule.removePhotoPost(id)) {
+        domModule.removePhotoPost(id);
+        return true;
+    }
+    return false;
+}
+function editPhotoPost(id, post) {
+    if (dataModule.editPhotoPost(id, post)) {
+        domModule.editPhotoPost(id, dataModule.getPhotoPost(id));
+    }
+}
+function displayHeader() {
+    domModule.displayHeader();
+}
+//displayHeader();
+displayAllPosts();
