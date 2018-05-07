@@ -89,6 +89,7 @@ input::placeholder {
 
 .card {
     display: block;
+    padding-bottom: 5vmax;
     background: #ffffff;
     text-align: left;
     margin: 0.8vmax auto;
@@ -120,8 +121,49 @@ input::placeholder {
     color: #A2A398;
     font-weight: bold;
 }
+.dropbtn {
+    float: right;
+    text-decoration: none;
+    font-size: 1.2vh;
+    font-weight: bold;
+    padding: 1vmax;
+    border: none;
+    cursor: pointer;
+}
 
-.filter label {
+.dropbtn:hover, .dropbtn:focus {
+    background-color: #F2F2ED;
+    border-radius: 0.8vmax;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 1vmax;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    font-family: Monaco;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.show {display:block;}
+
+label {
+    float: left;
+    padding-bottom: 1vmax;
     position: relative;
     top: 0.8vmax;
     font-size: 1vmax;
@@ -285,7 +327,7 @@ hr {
     text-align: center;
 }
 
-button {
+.loadMe {
     background: #cccccc;
     border-radius: 0.7vmax;
     height: 3vmax;
@@ -311,4 +353,69 @@ footer {
 
 .footer p {
     color: #cccccc;
+}
+
+
+
+.cancelbtn{
+    padding: 1vh 1vw;
+    background-color: #9e6464;
+}
+.signupbtn {
+    padding: 1vh 1vw;
+    background-color: #ccc;
+}
+/* Float cancel and signup buttons and add an equal width */
+.cancelbtn, .signupbtn {
+    float: left;
+    width: 50%;
+    border-radius: 1vmax;
+    margin: 1vmax 0 1vmax;
+}
+
+
+/* The Modal (background) */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: #F2F2ED;
+    padding-top: 5vmax;
+}
+
+/* Modal Content/Box */
+.modal-content {
+    text-align: center;
+    background-color: #fefefe;
+    margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+    border: 1px solid #888;
+    width: 60%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button (x) */
+.close {
+    position: absolute;
+    right: 1vw;
+    top: 1vh;
+    font-size: 3vh;
+    font-weight: bold;
+    color: black;
+}
+
+.close:hover,
+.close:focus {
+    color: #9e6464;
+    cursor: pointer;
+}
+
+/* Change styles for cancel button and signup button on extra small screens */
+@media screen and (max-width: 300px) {
+    .cancelbtn, .signupbtn {
+        width: 100%;
+    }
 }

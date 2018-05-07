@@ -26,8 +26,8 @@ function generatePosts(number) {
     return posts;
 }
 
-let photoPosts = generatePosts(20).sort((a, b) => {
-    return a.createdAt - b.createdAt
+let photoPosts = generatePosts(40).sort((a, b) => {
+    return b.createdAt - a.createdAt
 });
 
 
@@ -113,7 +113,7 @@ let postsModule = (function (photoPosts) {
         } else {
             photoPosts.push(photoPost);
             photoPosts = photoPosts.sort((a, b) => {
-                return a.createdAt - b.createdAt
+                return b.createdAt - a.createdAt
             });
             return true;
         }
@@ -159,83 +159,13 @@ let postsModule = (function (photoPosts) {
 
 })(photoPosts);
 
-function tests() {
-    console.log('\n    getPhotoPosts');
-    console.log('get first post');
-    console.log(postsModule.getPhotoPosts(0, 1));
-    console.log('get first 10 posts');
-    console.log(postsModule.getPhotoPosts(0, 10));
-    console.log('get all posts of "Author 0"');
-    console.log(postsModule.getPhotoPosts(0, photoPosts.length, {author: 'Author 0'}));
-    console.log('get first post with date ' + new Date('2018-03-05T12:00:00'));
-    console.log(postsModule.getPhotoPosts(0, 1, {date: new Date('2018-03-05T12:00:00')}));
-    console.log('get first post with tag "minimalism"');
-    console.log(postsModule.getPhotoPosts(0, 1, {tags: ['minimalism']}));
-    console.log('get invalid post');
-    console.log(postsModule.getPhotoPost('invalid id'));
-
-    console.log('\n    postValidator');
-    let post = Object.assign({}, photoPosts[0]);
-    console.log('valid post');
-    console.log(postsModule.validatePhotoPost(post));
-    post.id = 111;
-    console.log('invalid id');
-    console.log(postsModule.validatePhotoPost(post));
-    post.id = '1';
-    post.description = 123;
-    console.log('invalid description');
-    console.log(postsModule.validatePhotoPost(post));
-    post.description = 'desc';
-    post.author = '';
-    console.log('empty author');
-    console.log(postsModule.validatePhotoPost(post));
-    post.author = 'nicky';
-    post.createdAt = '12:00';
-    console.log('invalid creation date');
-    console.log(postsModule.validatePhotoPost(post));
-    post.createdAt = new Date;
-    post.photoLink = '';
-    console.log('invalid photo link');
-    console.log(postsModule.validatePhotoPost(post));
-
-    console.log('\n    addPost');
-    let newPost = Object.assign({}, photoPosts[0]);
-    newPost.id = '-1';
-    console.log('valid post');
-    console.log(postsModule.addPhotoPost(newPost));
-    delete newPost.author;
-    console.log('invalid post');
-    console.log(postsModule.addPhotoPost(newPost));
-
-    console.log('\n    editPhotoPost');
-    let newDesc = photoPosts[0].description + "!";
-    console.log('edit first post description');
-    console.log(postsModule.editPhotoPost(photoPosts[0].id, {description: newDesc}));
-    console.log('edit invalid post');
-    console.log(postsModule.editPhotoPost('invalid id', {description: 'new description'}));
-    console.log('edit to make it invalid');
-    console.log(postsModule.editPhotoPost(photoPosts[0].id, {description: undefined}));
-
-    console.log('\n    removePhotoPost');
-    let id = photoPosts[0].id;
-    console.log('remove first post');
-    console.log(postsModule.removePhotoPost(id));
-    console.log('get removed post');
-    console.log(postsModule.getPhotoPost(id));
-    console.log('remove invalid post');
-    console.log(postsModule.removePhotoPost('invalid id'));
-
-
-}
-tests();
-
-let userName = 'Author 1';
+let userName = '';
 
 let domModule = (function () {
     let self = {};
 
     self.displayPosts = function (posts) {
-        document.getElementById('posts').innerHTML = '';
+        document.getElementById('posts');
         for (let i = 0; i < posts.length - 1; i++) {
             self.displayPost(posts[i]);
         }
@@ -252,18 +182,23 @@ let domModule = (function () {
         div.id = `post-${post.id}`;
         div.innerHTML = `
         <div class="card-header">
-            <div>
-                <img src="${post.photoLink}" class="profile-img">
-            </div>
+            <div><img src="${post.photoLink}" class="profile-img"></div>
             <div class="name">
                 <div>${post.author.toUpperCase()}</div>
-                <span class="data">
-                    ${post.createdAt.toLocaleDateString()}</span>
+                <span class="data">${post.createdAt.toLocaleDateString()}</span>
             </div>
-
         </div>
+        ${userName ? `
         <div class = "options padd">
-            <a href="#options">...</a>
+        <div class="dropdown">
+<a class="dropbtn">...</a>
+  <div id="myDropdown" class="dropdown-content">
+    <a href="#edit">Edit</a>
+    <a href="#delete">Delete</a>
+  </div>
+</div>
+</div>` : ''}
+        
         </div>
         <div class="content">
             <img src="./img/minimalism.jpg">
@@ -301,8 +236,31 @@ let domModule = (function () {
     self.displayHeader = function () {
         let ul = document.getElementById('right').firstElementChild;
         ul.innerHTML = `${userName ? `<li><a href="#username" class="username">${userName} |</a></li>
-                <li><div class="add">+</div></li>` :
-            `<li><a href="#" class="add">Sign in</a></li>`}`;
+                <li><div class="add" onclick="myFunc()">+</div></li>` :
+            `<li><a href = "#" onclick="document.getElementById('id01').style.display='block'" style="width:auto;" class="add">Sign in</a></li>
+
+<div id="id01" class="modal">
+    <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+    <form class="modal-content">
+        <div class="container">
+            <h1 class = "add">Sign in</h1>
+            <hr>
+            <label>Name</label>
+            <input type="text" placeholder="Enter name" name="name" required>
+
+            <label>Password</label>
+            <input type="password" placeholder="Enter password" name="psw" required>
+
+            <div class="clearfix">
+                <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
+                <button type="submit" class="signupbtn">Sign in</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+`}`;
     };
     return self;
 })();
@@ -330,5 +288,82 @@ function editPhotoPost(id, post) {
 function displayHeader() {
     domModule.displayHeader();
 }
-//displayHeader();
+
+function load() {
+    events.loadMore();
+}
+
+function sosi() {
+    let button = document.getElementById("load");
+    button.addEventListener('click', alert("sosi"));
+}
+
+function authorizationForm(){
+    let modal = document.getElementById('id01');
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+
+}
+// function editPhoto(id) {
+//     const postElem = document.getElementById(`post-${id}`);
+//     if (postElem) {
+//         postElem.getElementsByClassName("dropdown-content").addEventListener("click", function(){
+//             classList.toggle("show")};}
+//     }
+
+//
+// function authorizationForm() {
+//     let div = document.createElement('div');
+//     div.className += 'authorization';
+//     div.innerHTML = ``
+// }
+// function myFunc() {
+//     alert("ADD");
+// }
+//
+// let eventModule = (function () {
+//     let self = {};
+//     self.listenEvent(e)
+//     document.getElementsByClassName("dropdown-content").addEventListener("click", editPhoto());
+// });
+
+
+
+
+
+
+displayHeader();
 displayAllPosts();
+
+
+let loadMore = (function(window, undefined){
+    let i = 0;
+       let button = document.getElementById('load')
+            .addEventListener(
+                'click',
+                function () {
+                    i += 10;
+                        domModule.displayPosts(postsModule.getPhotoPosts(i, 10,));
+                // #TODO Create XHR request
+                }
+            );
+})(window, undefined)
+let name;
+let filtr = (function(window, undefined){
+
+        let input = document.getElementById("name");
+        input.addEventListener('change', function () {
+            name = input.textContent;
+            console.log(name);
+        });
+    }
+)(window, undefined);
+
+window.onload = function (){
+    authorizationForm();
+}
