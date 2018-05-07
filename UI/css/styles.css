@@ -52,6 +52,7 @@ body {
     text-decoration: none;
     font-weight: bold;
     color: #A2A398;
+    cursor: pointer;
 }
 
 .search {

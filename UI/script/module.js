@@ -159,7 +159,7 @@ let postsModule = (function (photoPosts) {
 
 })(photoPosts);
 
-let userName = '';
+let userName = 'sds';
 
 let domModule = (function () {
     let self = {};
@@ -191,8 +191,8 @@ let domModule = (function () {
         ${userName ? `
         <div class = "options padd">
         <div class="dropdown">
-<a class="dropbtn">...</a>
-  <div id="myDropdown" class="dropdown-content">
+<a class="dropbtn" onclick="editPhoto(${post.id})">...</a>
+  <div id="myDropdown-${post.id}" class="dropdown-content" >
     <a href="#edit">Edit</a>
     <a href="#delete">Delete</a>
   </div>
@@ -237,13 +237,13 @@ let domModule = (function () {
         let ul = document.getElementById('right').firstElementChild;
         ul.innerHTML = `${userName ? `<li><a href="#username" class="username">${userName} |</a></li>
                 <li><div class="add" onclick="myFunc()">+</div></li>` :
-            `<li><a href = "#" onclick="document.getElementById('id01').style.display='block'" style="width:auto;" class="add">Sign in</a></li>
+            `<li><a href = "#" onclick="document.getElementById('id01').style.display='block'" class="add">Sign in</a></li>
 
 <div id="id01" class="modal">
     <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
     <form class="modal-content">
         <div class="container">
-            <h1 class = "add">Sign in</h1>
+            <h1 class ="add">Sign in</h1>
             <hr>
             <label>Name</label>
             <input type="text" placeholder="Enter name" name="name" required>
@@ -293,77 +293,47 @@ function load() {
     events.loadMore();
 }
 
-function sosi() {
-    let button = document.getElementById("load");
-    button.addEventListener('click', alert("sosi"));
-}
-
-function authorizationForm(){
+function authorizationForm() {
     let modal = document.getElementById('id01');
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target === modal) {
             modal.style.display = "none";
         }
     };
 
 }
-// function editPhoto(id) {
-//     const postElem = document.getElementById(`post-${id}`);
-//     if (postElem) {
-//         postElem.getElementsByClassName("dropdown-content").addEventListener("click", function(){
-//             classList.toggle("show")};}
-//     }
+function editPhoto(id) {
+    let $option = document.getElementById(`post-${id}`).querySelector(`#myDropdown-${id}`);
+        $option.classList.toggle("show");
 
-//
-// function authorizationForm() {
-//     let div = document.createElement('div');
-//     div.className += 'authorization';
-//     div.innerHTML = ``
-// }
-// function myFunc() {
-//     alert("ADD");
-// }
-//
-// let eventModule = (function () {
-//     let self = {};
-//     self.listenEvent(e)
-//     document.getElementsByClassName("dropdown-content").addEventListener("click", editPhoto());
-// });
-
-
-
-
+}
 
 
 displayHeader();
 displayAllPosts();
 
 
-let loadMore = (function(window, undefined){
+let loadMore = (function (window, undefined) {
     let i = 0;
-       let button = document.getElementById('load')
-            .addEventListener(
-                'click',
-                function () {
-                    i += 10;
-                        domModule.displayPosts(postsModule.getPhotoPosts(i, 10,));
-                // #TODO Create XHR request
-                }
-            );
+    let button = document.getElementById('load')
+        .addEventListener(
+            'click',
+            function () {
+                i += 10;
+                domModule.displayPosts(postsModule.getPhotoPosts(i, 10,));
+            }
+        );
 })(window, undefined)
 let name;
-let filtr = (function(window, undefined){
+let filtr = (function (window, undefined) {
 
         let input = document.getElementById("name");
         input.addEventListener('change', function () {
             name = input.textContent;
             console.log(name);
         });
-    }
-)(window, undefined);
+    })(window, undefined);
 
-window.onload = function (){
+window.onload = function () {
     authorizationForm();
 }
