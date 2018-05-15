@@ -159,7 +159,7 @@ let postsModule = (function (photoPosts) {
 
 })(photoPosts);
 
-let userName = 'sds';
+let userName = 'Nick';
 
 let domModule = (function () {
     let self = {};
@@ -194,7 +194,7 @@ let domModule = (function () {
 <a class="dropbtn" onclick="editPhoto(${post.id})">...</a>
   <div id="myDropdown-${post.id}" class="dropdown-content" >
     <a href="#edit">Edit</a>
-    <a href="#delete">Delete</a>
+    <a href="#delete" onclick="deletePost(${post.id})">Delete</a>
   </div>
 </div>
 </div>` : ''}
@@ -236,7 +236,7 @@ let domModule = (function () {
     self.displayHeader = function () {
         let ul = document.getElementById('right').firstElementChild;
         ul.innerHTML = `${userName ? `<li><a href="#username" class="username">${userName} |</a></li>
-                <li><div class="add" onclick="myFunc()">+</div></li>` :
+                <li><div class="add" id="addPost"  onclick="addPhoto()">+</div></li>` :
             `<li><a href = "#" onclick="document.getElementById('id01').style.display='block'" class="add">Sign in</a></li>
 
 <div id="id01" class="modal">
@@ -303,14 +303,56 @@ function authorizationForm() {
 
 }
 function editPhoto(id) {
+    console.log(id);
     let $option = document.getElementById(`post-${id}`).querySelector(`#myDropdown-${id}`);
-        $option.classList.toggle("show");
+    $option.classList.toggle("show");
+
 
 }
 
+function addPhoto() {
+    console.log("banana");
+    document.getElementById('addPost').addEventListener('click', function () {
+
+        let div = document.createElement('div');
+        div.className += 'addPost';
+        div.id = `addPost`;
+        div.innerHTML = `
+    <span class="close" title="Close Modal">&times;</span>
+    <form class="modal-content">
+        <div class="container">
+            <h1 class ="add">Sign in</h1>
+            <hr>
+            <label>Name</label>
+            <input type="text" placeholder="Enter name" name="name" required>
+
+            <label>Password</label>
+            <input type="password" placeholder="Enter password" name="psw" required>
+
+            <div class="clearfix">
+                <button type="button" onclick="document.getElementById('addPost').style.display='none'" class="cancelbtn">Cancel</button>
+                <button type="submit" class="signupbtn">Sign in</button>
+            </div>
+        </div>
+    </form>
+`;
+
+        let modal = document.getElementById('addPost');
+        window.onclick = function (event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
+    });
+}
+
+function deletePost(id) {
+    domModule.removePhotoPost(id);
+}
 
 displayHeader();
 displayAllPosts();
+
 
 
 let loadMore = (function (window, undefined) {
@@ -327,12 +369,12 @@ let loadMore = (function (window, undefined) {
 let name;
 let filtr = (function (window, undefined) {
 
-        let input = document.getElementById("name");
-        input.addEventListener('change', function () {
-            name = input.textContent;
-            console.log(name);
-        });
-    })(window, undefined);
+    let input = document.getElementById("name");
+    input.addEventListener('change', function () {
+        name = input.textContent;
+        console.log(name);
+    });
+})(window, undefined);
 
 window.onload = function () {
     authorizationForm();
